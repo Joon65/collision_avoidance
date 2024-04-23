@@ -165,6 +165,12 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM_D1
+  
+   .user_sec(NOLOAD) :
+   {
+     . = ABSOLUTE(0x38000000);
+    *(.DMA_MEM_Section)
+   } > RAM_D3
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

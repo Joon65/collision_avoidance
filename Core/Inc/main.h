@@ -76,6 +76,26 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+#define		DMA_BUF_SIZE		1024
+#define		OK					0
+#define		NOK					-1
+
+extern UART_HandleTypeDef huart3;
+extern UART_HandleTypeDef huart4;
+
+extern DMA_HandleTypeDef hdma_uart4_rx;
+extern DMA_HandleTypeDef hdma_usart3_tx;
+
+
+extern uint8_t	LogDataToPC[DMA_BUF_SIZE];
+extern uint8_t  sen0337_sensor[DMA_BUF_SIZE];
+
+extern uint16_t one_sec_counter;
+extern uint16_t one_sec_flag;
+extern uint16_t	log_buf_available;
+extern uint16_t sensor_data_ready;
+extern uint16_t sen0337_buf_size;
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

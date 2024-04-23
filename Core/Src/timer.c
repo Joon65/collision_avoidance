@@ -14,5 +14,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	{
 		// timer = 1ms
 		HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+		one_sec_counter += 1;
+		if (one_sec_counter >= 1000)
+		{
+			one_sec_flag = 1;
+			one_sec_counter = 0;
+		}
 	}
 }
