@@ -25,6 +25,7 @@
 #include "uart.h"
 #include "sen0337_sensor.h"
 #include "VL53L1X_api.h"
+#include "i2c.h"
 
 /* USER CODE END Includes */
 
@@ -65,6 +66,8 @@ ETH_TxPacketConfig TxConfig;
 
 ETH_HandleTypeDef heth;
 
+I2C_HandleTypeDef hi2c1;
+
 TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart4;
@@ -84,6 +87,14 @@ uint16_t	one_sec_flag;
 uint16_t	log_buf_available;
 uint16_t	sensor_data_ready;
 uint16_t	sen0337_buf_size;
+uint16_t	distance;
+enum VL53L1X_state	state = NOT_BOOTED;
+
+uint16_t	tempW;
+uint8_t		temp_counter[16];
+uint8_t		temp=0;
+
+
 
 /* USER CODE END PV */
 
@@ -98,6 +109,7 @@ static void MX_ETH_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_UART4_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 
@@ -159,12 +171,14 @@ int main(void)
   MX_USB_OTG_FS_PCD_Init();
   MX_TIM6_Init();
   MX_UART4_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   one_sec_counter = 0;
   one_sec_flag = 0;
   sensor_data_ready = 0;
   log_buf_available = 1;
+
 
 
   HAL_TIM_Base_Start_IT(&htim6);
@@ -193,6 +207,39 @@ int main(void)
 		  //log_printf_dma("1 sec timer expired\r\n");
 		  //printf("1 sec timer expired\r\n");
 		  one_sec_flag = 0;
+
+		  // I2C READ
+		  // every sec, read a byte from the I2C device
+		  //uint8_t read_byte = read_I2C_byte(I2C_ADDRESS);
+
+		  // I2C WRITE
+		  //HAL_StatusTypeDef result = write_I2C_byte(I2C_ADDRESS, temp_counter);
+
+		  // I2C DWord Read
+		  //HAL_StatusTypeDef result = read_I2C_multi(I2C_ADDRESS, READ_ADDRESS,temp_counter, 4);
+
+		  // I2C DWord Write
+		  /*
+		  for(int i=0;i<4;i++)
+		  {
+			  temp_counter[i] = temp++;
+		  }
+		  HAL_StatusTypeDef result = write_I2C_multi(I2C_ADDRESS, WRITE_ADDRESS,temp_counter, 4);
+		  if (result != HAL_OK)
+			  log_printf_dma("Return value of write_I2C_byte : %d\r\n", result);
+
+		  log_printf_dma("%x %x %x %x\r\n", temp_counter[0], temp_counter[1], temp_counter[2], temp_counter[3]);
+
+
+		  VL53L1X_ERROR result;
+		  result = VL53L1X_GetSensorId(VL53L1X_I2C_ADDRESS, &tempW);
+		  log_printf_dma("Sensor ID = %04x, result = %d\r\n", tempW, result);
+		  */
+
+		  // I2C LV53L1X
+		  VL53L1X_distance_measurement(&state);
+
+
 	  }
 
 	  if (sensor_data_ready == 1)
@@ -332,6 +379,54 @@ static void MX_ETH_Init(void)
   /* USER CODE BEGIN ETH_Init 2 */
 
   /* USER CODE END ETH_Init 2 */
+
+}
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.Timing = 0x10C0ECFF;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
 
 }
 

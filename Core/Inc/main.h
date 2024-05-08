@@ -86,6 +86,7 @@ extern UART_HandleTypeDef huart4;
 extern DMA_HandleTypeDef hdma_uart4_rx;
 extern DMA_HandleTypeDef hdma_usart3_tx;
 
+extern I2C_HandleTypeDef hi2c1;
 
 extern uint8_t	LogDataToPC[DMA_BUF_SIZE];
 extern uint8_t  sen0337_sensor[DMA_BUF_SIZE];

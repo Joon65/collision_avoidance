@@ -268,7 +268,9 @@ VL53L1X_ERROR VL53L1X_GetInterruptPolarity(uint16_t dev, uint8_t *pInterruptPola
 
 	status |= VL53L1_RdByte(dev, GPIO_HV_MUX__CTRL, &Temp);
 	Temp = Temp & 0x10;
+	//LJD
 	*pInterruptPolarity = !(Temp>>4);
+
 	return status;
 }
 

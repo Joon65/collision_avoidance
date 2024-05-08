@@ -37,37 +37,97 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+//#include "stm32h7xx_hal_i2c.h"
+#include "main.h"
+
 
 int8_t VL53L1_WriteMulti( uint16_t dev, uint16_t index, uint8_t *pdata, uint32_t count) {
+	// Not used
 	return 0; // to be implemented
 }
 
-int8_t VL53L1_ReadMulti(uint16_t dev, uint16_t index, uint8_t *pdata, uint32_t count){
-	return 0; // to be implemented
+int8_t VL53L1_ReadMulti(uint16_t dev, uint16_t index, uint8_t *pdata, uint32_t count)
+{
+
+	HAL_StatusTypeDef	result;
+
+	result = HAL_I2C_Mem_Read(&hi2c1, dev, index, 2, pdata, count, 0xFFFF);
+
+	return (uint8_t)result; // to be implemented
+
+	//return 0;
 }
 
-int8_t VL53L1_WrByte(uint16_t dev, uint16_t index, uint8_t data) {
-	return 0; // to be implemented
+int8_t VL53L1_WrByte(uint16_t dev, uint16_t index, uint8_t data)
+{
+
+	HAL_StatusTypeDef	result;
+
+	result = HAL_I2C_Mem_Write(&hi2c1, dev, index, 2, &data, 1, 0xFFFF);
+
+	return (uint8_t)result; // to be implemented
+
+	//return 0;
 }
 
-int8_t VL53L1_WrWord(uint16_t dev, uint16_t index, uint16_t data) {
-	return 0; // to be implemented
+int8_t VL53L1_WrWord(uint16_t dev, uint16_t index, uint16_t data)
+{
+
+	HAL_StatusTypeDef	result;
+
+	result = HAL_I2C_Mem_Write(&hi2c1, dev, index, 2, &data, 2, 0xFFFF);
+
+	return (uint8_t)result; // to be implemented
+
+	//return 0;
 }
 
-int8_t VL53L1_WrDWord(uint16_t dev, uint16_t index, uint32_t data) {
-	return 0; // to be implemented
+int8_t VL53L1_WrDWord(uint16_t dev, uint16_t index, uint32_t data)
+{
+
+	HAL_StatusTypeDef	result;
+
+	result = HAL_I2C_Mem_Write(&hi2c1, dev, index, 2, &data, 4, 0xFFFF);
+
+	return (uint8_t)result; // to be implemented
+
+	//return 0;
 }
 
-int8_t VL53L1_RdByte(uint16_t dev, uint16_t index, uint8_t *data) {
-	return 0; // to be implemented
+int8_t VL53L1_RdByte(uint16_t dev, uint16_t index, uint8_t *data)
+{
+
+	HAL_StatusTypeDef	result;
+
+	result = HAL_I2C_Mem_Read(&hi2c1, dev, index, 2, data, 1, 0xFFFF);
+
+	return (uint8_t)result; // to be implemented
+
+	//return 0;
 }
 
-int8_t VL53L1_RdWord(uint16_t dev, uint16_t index, uint16_t *data) {
-	return 0; // to be implemented
+int8_t VL53L1_RdWord(uint16_t dev, uint16_t index, uint16_t *data)
+{
+
+	HAL_StatusTypeDef	result;
+
+	result = HAL_I2C_Mem_Read(&hi2c1, dev, index, 2, data, 2, 0xFFFF);
+
+	return (uint8_t)result; // to be implemented
+
+	//return 0;
 }
 
-int8_t VL53L1_RdDWord(uint16_t dev, uint16_t index, uint32_t *data) {
-	return 0; // to be implemented
+int8_t VL53L1_RdDWord(uint16_t dev, uint16_t index, uint32_t *data)
+{
+
+	HAL_StatusTypeDef	result;
+
+	result = HAL_I2C_Mem_Write(&hi2c1, dev, index, 2, data, 4, 0xFFFF);
+
+	return (uint8_t)result; // to be implemented
+
+	//return 0;
 }
 
 int8_t VL53L1_WaitMs(uint16_t dev, int32_t wait_ms){
